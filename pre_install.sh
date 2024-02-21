@@ -24,5 +24,37 @@ package_manager(){
         fi
     done
 }
-
 package_manager
+
+package_installer(){
+    packagesNeeded=($@)
+    if [ -x "$(command -v apk)" ];
+    then
+        sudo apk add --no-cache "${packagesNeeded[@]}"
+    elif [ -x "$(command -v apt-get)" ];
+    then
+        sudo apt-get install "${packagesNeeded[@]}"
+    elif [ -x "$(command -v dnf)" ];
+    then
+        sudo dnf install "${packagesNeeded[@]}"
+    elif [ -x "$(command -v zypper)" ];
+    then
+        sudo zypper install "${packagesNeeded[@]}"
+    else
+        echo "FAILED TO INSTALL PACKAGE: Package manager not found. You must manually install: "${packagesNeeded[@]}"">&2;
+    fi
+}
+
+#install requir package for vagrant 
+#PACKAGES="curl python3-pip virtualbox vagrant ansible"
+#package_installer $PACKAGES
+echo -e "enter the nodes Number:\n"
+read NODES_NUMBER
+
+sed -i -e "s/NODES_NUMBER/${NODES_NUMBER}/g" ./Vagrantfile
+
+mkdir data{1..$NODES_NUMBER}
+
+vagrant up 
+
+
