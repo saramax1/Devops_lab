@@ -57,9 +57,12 @@ NODES_NUMBER=3
 for N in $(seq "$NODES_NUMBER");
 do
         echo $N
-        lxc-create --name lcontainer_$N  --template download -- --dist ubuntu --release jammy --arch amd64
-        lxc-start --name lcontainer_$N
-        lxc-info --name lcontainer_$N
-        lxc-info --name lcontainer_$N |grep IP: |cut -d":" -f 2 | tr -d " " |xargs echo container_$N >> .hosts
+        lxd init --minimal
+        lxc launch ubuntu:22.04 container_$N
+        lxc list
+        #lxc-create --name lcontainer_$N  --template download -- --dist ubuntu --release jammy --arch amd64
+        #lxc-start --name lcontainer_$N
+        #lxc-info --name lcontainer_$N
+        #lxc-info --name lcontainer_$N |grep IP: |cut -d":" -f 2 | tr -d " " |xargs echo container_$N >> .hosts
 
 done
