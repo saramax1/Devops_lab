@@ -47,7 +47,7 @@ package_installer(){
 }
 
 #install requir package for vagrant
-PACKAGES="curl python3-pip virtualbox ansible vagrant lxc"
+PACKAGES="curl python3-pip virtualbox ansible vagrant lxd-installer"
 
 package_installer $PACKAGES
 echo -e "enter the nodes Number:\n"
