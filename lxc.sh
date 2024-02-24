@@ -58,7 +58,7 @@ for N in $(seq "$NODES_NUMBER");
 do
         echo $N
         lxd init --minimal
-        lxc launch ubuntu:22.04 container_$N
+        lxc launch ubuntu:22.04 container-$N
         lxc list
         #lxc-create --name lcontainer_$N  --template download -- --dist ubuntu --release jammy --arch amd64
         #lxc-start --name lcontainer_$N
