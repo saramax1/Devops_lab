@@ -47,9 +47,10 @@ package_installer(){
 }
 
 #install requir package for vagrant
-PACKAGES="curl python3-pip virtualbox ansible vagrant lxd-installer"
+PACKAGES="curl python3-pip virtualbox ansible vagrant snapd"
 
 package_installer $PACKAGES
+snap install lxd
 echo -e "enter the nodes Number:\n"
 #read NODES_NUMBER
 NODES_NUMBER=3
