@@ -60,6 +60,7 @@ do
         lxd init --minimal
         lxc launch ubuntu:22.04 container-$N
         lxc list
+        lxc list  --columns=4 |grep eth0|cut -d"(" -f 1 |cut -d"|" -f 2 |xargs echo container-$N >> .hosts
         #lxc-create --name lcontainer_$N  --template download -- --dist ubuntu --release jammy --arch amd64
         #lxc-start --name lcontainer_$N
         #lxc-info --name lcontainer_$N
