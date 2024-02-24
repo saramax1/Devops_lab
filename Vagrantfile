@@ -19,7 +19,7 @@ Vagrant.configure("2") do |config|
   # boxes at https://vagrantcloud.com/search.
   
   # Define Nodes Number
-  Nodes = 3
+  Nodes = NODES_NUMBER
   
   (1..Nodes).each do |i|
     config.vm.define "node#{i}" do |node|
