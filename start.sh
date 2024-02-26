@@ -19,7 +19,20 @@ prepareHost(){
                 monitor_server=$d
                 break
         done
-        echo -e "[monitorserver]\n $(echo $monitor_server|cut -d':' -f2)" >> prometheus_inventory
+        echo -e "[monitorserver]\n$(echo $monitor_server|cut -d':' -f2) \n[nodeservers]" > prometheus_inventory
+
+        while IFS= read -r line
+        do
+                if [ $(echo $monitor_server|cut -d ":" -f2) != $( echo "$line" |sed 's/^[ \t]*//'| tr -s " " | tr " " ":" |cut -d ":" -f2) ]
+                then
+                        echo "$line" |sed 's/^[ \t]*//'| tr -s " " | tr " " ":" |cut -d ":" -f2 >> prometheus_inventory
+                fi
+        done < .hosts
+
+        echo "Your Inventory:"
+        cat prometheus_inventory
+        echo "****************"
+
 
 
 }
