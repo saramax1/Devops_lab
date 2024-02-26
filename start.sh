@@ -33,8 +33,16 @@ prepareHost(){
         cat prometheus_inventory
         echo "****************"
 
-
-
+        ansible-inventory -i prometheus_inventory --graph
+        lxc profile create proxy-3000
+        lxc profile create proxy-9100
+        MONITOR_SERVER_NAME= "$(echo $monitor_server|cut -d ":" -f1)"
+        echo $MONITOR_SERVER_NAME
+        lxc profile device add proxy-3000 hostport3000 proxy connect="tcp:127.0.0.1:3000" listen="tcp:0.0.0.0:3000"
+        lxc profile device add proxy-9100 hostport9100 proxy connect="tcp:127.0.0.1:91000" listen="tcp:0.0.0.0:9100"
+        lxc profile add container1 proxy-3000
+        lxc profile add container1 proxy-9100
+        
 }
 
 
