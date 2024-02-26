@@ -54,16 +54,18 @@ snap install lxd
 echo -e "enter the nodes Number:\n"
 #read NODES_NUMBER
 NODES_NUMBER=3
+ssh-keygen -f ./ssh/lxd_key -t ecdsa -b 521 -q -N ""
 for N in $(seq "$NODES_NUMBER");
 do
         echo $N
         lxd init --minimal
         lxc launch ubuntu:22.04 container-$N
         lxc list
-        lxc list  --columns=n4 |grep eth0|cut -d"(" -f 1 |cut -d "|" -f 2,3 |tr "|" " " > .hosts
+        #lxc list  --columns=n4 |grep eth0|cut -d"(" -f 1 |cut -d "|" -f 2,3 |tr "|" " " > .hosts
+        #lxc list  --columns=4 |grep eth0|cut -d"(" -f 1|cut -d "|" -f 2 > inventory
 
         #lxc list  --columns=4 |grep eth0|cut -d"(" -f 1 |cut -d"|" -f 2 |xargs echo container-$N >> .hosts
-        ssh-keygen -f ./ssh/lxd_key -t ecdsa -b 521 -q -N ""
+        
         cat ./ssh/lxd_key.pub | lxc exec container-$N -- sh -c "cat >> ~/.ssh/authorized_keys"
         #lxc-create --name lcontainer_$N  --template download -- --dist ubuntu --release jammy --arch amd64
         #lxc-start --name lcontainer_$N
@@ -71,3 +73,12 @@ do
         #lxc-info --name lcontainer_$N |grep IP: |cut -d":" -f 2 | tr -d " " |xargs echo container_$N >> .hosts
 
 done
+lxc list  --columns=n4 |grep eth0|cut -d"(" -f 1 |cut -d "|" -f 2,3 |tr "|" " " > .hosts
+
+lxc list  --columns=4 |grep eth0|cut -d"(" -f 1|cut -d "|" -f 2 > inventory
+mkdir -p /etc/ansible
+touch /etc/ansible/ansible.cfg
+echo -e "[defaults]\n host_key_checking = False" > /etc/ansible/ansible.cfg
+ansible -m ping -i inventory --key-file ./ssh/lxd_key all
+
+
