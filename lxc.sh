@@ -60,7 +60,9 @@ do
         lxd init --minimal
         lxc launch ubuntu:22.04 container-$N
         lxc list
-        lxc list  --columns=4 |grep eth0|cut -d"(" -f 1 |cut -d"|" -f 2 |xargs echo container-$N >> .hosts
+        lxc list  --columns=n4 |grep eth0|cut -d"(" -f 1 |cut -d "|" -f 2,3 |tr "|" " " > .hosts
+
+        #lxc list  --columns=4 |grep eth0|cut -d"(" -f 1 |cut -d"|" -f 2 |xargs echo container-$N >> .hosts
         ssh-keygen -f ./ssh/lxd_key -t ecdsa -b 521 -q -N ""
         cat ./ssh/lxd_key.pub | lxc exec container-$N -- sh -c "cat >> ~/.ssh/authorized_keys"
         #lxc-create --name lcontainer_$N  --template download -- --dist ubuntu --release jammy --arch amd64
