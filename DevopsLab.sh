@@ -95,6 +95,7 @@ run_vagrant(){
 }
 
 run_lxd(){
+    mkdir ./ssh/
     touch ./ssh/lxd_key
     ssh-keygen -f ./ssh/lxd_key -t ecdsa -b 521 -q -N ""
     lxd init --minimal
