@@ -35,6 +35,7 @@ package_installer(){
         sudo apk add --no-cache "${packagesNeeded[@]}" -y
     elif [ -x "$(command -v apt-get)" ];
     then
+        sudo apt-get update
         sudo apt-get install "${packagesNeeded[@]}" -y
     elif [ -x "$(command -v dnf)" ];
     then
