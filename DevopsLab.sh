@@ -95,11 +95,12 @@ run_vagrant(){
 }
 
 run_lxd(){
+    touch ./ssh/lxd_key
     ssh-keygen -f ./ssh/lxd_key -t ecdsa -b 521 -q -N ""
     lxd init --minimal
     lxc launch $2:$3 $1
     lxc list
-    lxc list  --columns=n4 |grep eth0|cut -d"(" -f 1 |cut -d "|" -f 2,3 |tr "|" " " > .hosts
+    lxc list  --columns=n4 |gr./ssh/lxd_keyep eth0|cut -d"(" -f 1 |cut -d "|" -f 2,3 |tr "|" " " > .hosts
     cat ./ssh/lxd_key.pub | lxc exec $1 -- sh -c "cat >> ~/.ssh/authorized_keys"
     make_inventory_for_ansible
         lxc profile create proxy-3000
