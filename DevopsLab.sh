@@ -99,6 +99,7 @@ run_lxd(){
     lxc launch $2:$3 $1
     lxc list
     lxc list  --columns=n4 |grep eth0|cut -d"(" -f 1 |cut -d "|" -f 2,3 |tr "|" " " > .hosts
+    sleep 10
     lxc exec $1 -- sh -c "apt install openssh-server -y && mkdir ~/.ssh/"
     cat ./ssh/lxd_key.pub | lxc exec $1 -- sh -c "cat >> ~/.ssh/authorized_keys"  
     lxc profile add $1 proxy-3000
