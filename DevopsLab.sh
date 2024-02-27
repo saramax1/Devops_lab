@@ -101,6 +101,8 @@ run_lxd(){
     lxc list  --columns=n4 |grep eth0|cut -d"(" -f 1 |cut -d "|" -f 2,3 |tr "|" " " > .hosts
     lxc exec $1 -- sh -c "apt install openssh-server -y && mkdir ~/.ssh/"
     cat ./ssh/lxd_key.pub | lxc exec $1 -- sh -c "cat >> ~/.ssh/authorized_keys"  
+    lxc profile add $1 proxy-3000
+    lxc profile add $1 proxy-9100
 }
 
 
@@ -138,6 +140,11 @@ do
             break
             ;;
         "lxd")
+            lxc profile create proxy-3000
+            lxc profile create proxy-9100
+
+            lxc profile device add proxy-3000 hostport3000 proxy connect="tcp:127.0.0.1:3000" listen="tcp:0.0.0.0:3000"
+            lxc profile device add proxy-9100 hostport9100 proxy connect="tcp:127.0.0.1:91000" listen="tcp:0.0.0.0:9100"
             echo "you chose choice $REPLY which is $opt"
             PACKAGES=$PACKAGES"curl python3-pip virtualbox ansible snapd"
             echo -e "default packages are:\n" $PACKAGES "\n if you need add new packge to list Enter the packge name"
@@ -158,14 +165,8 @@ do
             done
             check_ansible
             #make_inventory_for_ansible
-            lxc profile create proxy-3000
-            lxc profile create proxy-9100
-            MONITOR_SERVER_NAME= "$(echo $monitor_server|cut -d ":" -f1)"
-            echo $MONITOR_SERVER_NAME
-            lxc profile device add proxy-3000 hostport3000 proxy connect="tcp:127.0.0.1:3000" listen="tcp:0.0.0.0:3000"
-            lxc profile device add proxy-9100 hostport9100 proxy connect="tcp:127.0.0.1:91000" listen="tcp:0.0.0.0:9100"
-            lxc profile add container1 proxy-3000
-            lxc profile add container1 proxy-9100
+
+
             break
             ;;
         "lxc")
