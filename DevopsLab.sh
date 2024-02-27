@@ -141,12 +141,7 @@ do
             break
             ;;
         "lxd")
-            lxc profile create proxy-3000
-            lxc profile create proxy-9100
-
-            lxc profile device add proxy-3000 hostport3000 proxy connect="tcp:127.0.0.1:3000" listen="tcp:0.0.0.0:3000"
-            lxc profile device add proxy-9100 hostport9100 proxy connect="tcp:127.0.0.1:91000" listen="tcp:0.0.0.0:9100"
-            echo "you chose choice $REPLY which is $opt"
+echo "you chose choice $REPLY which is $opt"
             PACKAGES=$PACKAGES"curl python3-pip virtualbox ansible snapd"
             echo -e "default packages are:\n" $PACKAGES "\n if you need add new packge to list Enter the packge name"
             read NEW_PACKGES
@@ -159,6 +154,12 @@ do
             #touch ./ssh/lxd_key
             ssh-keygen -f ./ssh/lxd_key -t ecdsa -b 521 -q -N ""
             lxd init --minimal
+                        lxc profile create proxy-3000
+            lxc profile create proxy-9100
+
+            lxc profile device add proxy-3000 hostport3000 proxy connect="tcp:127.0.0.1:3000" listen="tcp:0.0.0.0:3000"
+            lxc profile device add proxy-9100 hostport9100 proxy connect="tcp:127.0.0.1:91000" listen="tcp:0.0.0.0:9100"
+            
             for N in $(seq "$NODES_NUMBER");
             do
                     echo LXD:$N
