@@ -98,7 +98,7 @@ run_lxd(){
 
     lxc launch $2:$3 $1
     lxc list
-    lxc list  --columns=n4 |gr./ssh/lxd_keyep eth0|cut -d"(" -f 1 |cut -d "|" -f 2,3 |tr "|" " " > .hosts
+    lxc list  --columns=n4 |gr./ssh/lxd_key eth0|cut -d"(" -f 1 |cut -d "|" -f 2,3 |tr "|" " " > .hosts
     cat ./ssh/lxd_key.pub | lxc exec $1 -- sh -c "cat >> ~/.ssh/authorized_keys"  
 }
 
