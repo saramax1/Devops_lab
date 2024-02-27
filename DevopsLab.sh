@@ -134,6 +134,8 @@ select opt in "${options[@]}"
 do
     case $opt in
         "vagrant")
+            wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+            echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
             echo "you chose choice $REPLY which is $opt"
             PACKAGES=$PACKAGES"curl python3-pip virtualbox ansible vagrant"
             echo -e "default packages are:\n" $PACKAGES "\n if you need add new packge to list Enter the packge name"
