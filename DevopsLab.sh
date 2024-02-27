@@ -95,24 +95,11 @@ run_vagrant(){
 }
 
 run_lxd(){
-    mkdir ./ssh/
-    touch ./ssh/lxd_key
-    ssh-keygen -f ./ssh/lxd_key -t ecdsa -b 521 -q -N ""
-    lxd init --minimal
+
     lxc launch $2:$3 $1
     lxc list
     lxc list  --columns=n4 |gr./ssh/lxd_keyep eth0|cut -d"(" -f 1 |cut -d "|" -f 2,3 |tr "|" " " > .hosts
-    cat ./ssh/lxd_key.pub | lxc exec $1 -- sh -c "cat >> ~/.ssh/authorized_keys"
-    make_inventory_for_ansible
-        lxc profile create proxy-3000
-        lxc profile create proxy-9100
-        MONITOR_SERVER_NAME= "$(echo $monitor_server|cut -d ":" -f1)"
-        echo $MONITOR_SERVER_NAME
-        lxc profile device add proxy-3000 hostport3000 proxy connect="tcp:127.0.0.1:3000" listen="tcp:0.0.0.0:3000"
-        lxc profile device add proxy-9100 hostport9100 proxy connect="tcp:127.0.0.1:91000" listen="tcp:0.0.0.0:9100"
-        lxc profile add container1 proxy-3000
-        lxc profile add container1 proxy-9100
-    
+    cat ./ssh/lxd_key.pub | lxc exec $1 -- sh -c "cat >> ~/.ssh/authorized_keys"  
 }
 
 
@@ -159,11 +146,25 @@ do
             snap install lxd
             echo -e "enter the nodes Number:\n"
             read NODES_NUMBER
+            mkdir ./ssh/
+            touch ./ssh/lxd_key
+            ssh-keygen -f ./ssh/lxd_key -t ecdsa -b 521 -q -N ""
+            lxd init --minimal
             for N in $(seq "$NODES_NUMBER");
             do
                     echo LXD:$N
                     run_lxd container-$N ubuntu 22.04 
             done
+            check_ansible
+            #make_inventory_for_ansible
+            lxc profile create proxy-3000
+            lxc profile create proxy-9100
+            MONITOR_SERVER_NAME= "$(echo $monitor_server|cut -d ":" -f1)"
+            echo $MONITOR_SERVER_NAME
+            lxc profile device add proxy-3000 hostport3000 proxy connect="tcp:127.0.0.1:3000" listen="tcp:0.0.0.0:3000"
+            lxc profile device add proxy-9100 hostport9100 proxy connect="tcp:127.0.0.1:91000" listen="tcp:0.0.0.0:9100"
+            lxc profile add container1 proxy-3000
+            lxc profile add container1 proxy-9100
             break
             ;;
         "lxc")
